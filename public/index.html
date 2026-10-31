@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Novelinhas do Koala</title>
+<link rel="icon" href="/assets/coala-adesivo.webp" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --fundo:#050912; --painel:#0c1428; --painel2:#0a1122; --campo:#070d1c;
+    --texto:#e8f1ff; --suave:#8ea3c4; --borda:rgba(70,150,255,.22); --borda-forte:rgba(70,170,255,.55);
+    --azul:#1e8fff; --ciano:#22d3ff; --brilho:rgba(30,160,255,.45);
+    --ok:#33e39a; --erro:#ff5d6c; --aviso:#ffc24a;
+    --titulo:"Russo One", "Segoe UI Black", Impact, sans-serif;
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  html { color-scheme:dark; }
+  body {
+    margin:0; font:14px/1.55 "Exo 2", "Segoe UI", system-ui, sans-serif; color:var(--texto); min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 8% -10%, rgba(30,143,255,.22), transparent 60%),
+      radial-gradient(700px 420px at 100% 0%, rgba(34,211,255,.12), transparent 60%),
+      radial-gradient(600px 400px at 50% 120%, rgba(255,140,40,.07), transparent 60%),
+      var(--fundo);
+    background-attachment:fixed;
+  }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#1b2a4a; border-radius:99px; border:2px solid var(--fundo); }
+  ::-webkit-scrollbar-thumb:hover { background:#27406e; }
+
+  header {
+    display:flex; align-items:center; gap:14px; padding:12px 22px; flex-wrap:wrap; position:sticky; top:0; z-index:5;
+    background:linear-gradient(180deg, rgba(8,14,30,.96), rgba(8,14,30,.85)); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--borda); box-shadow:0 6px 30px rgba(0,0,0,.45);
+  }
+  .marca { display:flex; align-items:center; gap:14px; flex:1; min-width:240px; }
+  .adesivo {
+    width:58px; height:58px; border-radius:16px; object-fit:cover; flex:none;
+    border:3px solid #fff; transform:rotate(-6deg);
+    box-shadow:0 0 0 2px var(--azul), 0 0 22px var(--brilho), 0 6px 14px rgba(0,0,0,.6);
+    transition:transform .25s;
+  }
+  .adesivo:hover { transform:rotate(4deg) scale(1.06); }
+  .marca h1 {
+    margin:0; font:22px/1 var(--titulo); letter-spacing:.02em; text-transform:uppercase;
+    background:linear-gradient(180deg, #ffffff 30%, #9fd4ff); -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 10px rgba(30,160,255,.35));
+  }
+  .marca h1 span { background:linear-gradient(180deg, #6fd6ff, var(--azul)); -webkit-background-clip:text; background-clip:text; }
+  .marca small { display:block; color:var(--suave); font-size:12px; margin-top:4px; letter-spacing:.03em; }
+
+  .pilula { font-size:12px; font-weight:600; padding:4px 11px; border-radius:99px; border:1px solid var(--borda); color:var(--suave); white-space:nowrap; background:rgba(10,18,36,.7); }
+  .pilula::before { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#3a4a66; margin-right:7px; vertical-align:1px; }
+  .pilula.on { color:var(--ok); border-color:rgba(51,227,154,.45); }
+  .pilula.on::before { background:var(--ok); box-shadow:0 0 8px var(--ok); }
+
+  main { display:grid; grid-template-columns:310px 1fr; gap:18px; padding:18px 22px 28px; align-items:start; max-width:1500px; margin:0 auto; }
+  @media (max-width:880px) { main { grid-template-columns:1fr; padding:14px 16px; } header { padding:10px 16px; } }
+  .coluna { display:grid; gap:18px; min-width:0; }
+  section {
+    position:relative; min-width:0; padding:16px; border-radius:16px;
+    background:linear-gradient(180deg, var(--painel), var(--painel2));
+    border:1px solid var(--borda); box-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  h2 {
+    font:13px/1 var(--titulo); text-transform:uppercase; letter-spacing:.08em; color:#79c7ff; margin:0 0 14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  h2::before { content:""; width:4px; height:14px; border-radius:2px; background:linear-gradient(180deg, var(--ciano), var(--azul)); box-shadow:0 0 8px var(--brilho); }
+
+  button, .botao {
+    font:600 13px/1.2 "Exo 2", "Segoe UI", sans-serif; letter-spacing:.02em; cursor:pointer; display:inline-block;
+    padding:8px 13px; border-radius:10px; color:var(--texto); background:#0f1b35; border:1px solid var(--borda);
+    transition:border-color .15s, box-shadow .15s, transform .1s, background .15s;
+  }
+  button:hover, .botao:hover { border-color:var(--borda-forte); box-shadow:0 0 12px rgba(30,160,255,.25); }
+  button:active, .botao:active { transform:translateY(1px); }
+  button.primario, .botao.primario {
+    color:#fff; border-color:transparent; text-transform:uppercase; letter-spacing:.05em;
+    background:linear-gradient(135deg, var(--azul), var(--ciano));
+    box-shadow:0 0 18px var(--brilho), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  button.primario:hover, .botao.primario:hover { box-shadow:0 0 26px rgba(34,211,255,.6), inset 0 1px 0 rgba(255,255,255,.3); }
+  button.mini { padding:3px 9px; font-size:12px; border-radius:7px; }
+  button:disabled { opacity:.45; cursor:default; box-shadow:none; }
+  input, textarea {
+    font:inherit; width:100%; padding:8px 10px; border-radius:10px; color:var(--texto);
+    background:var(--campo); border:1px solid var(--borda); transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, textarea:focus { outline:none; border-color:var(--azul); box-shadow:0 0 0 3px rgba(30,143,255,.2); }
+  input[type=checkbox] { accent-color:var(--azul); }
+  textarea { min-height:90px; resize:vertical; }
+  code { color:#8fd3ff; }
+  a { color:#6fd0ff; }
+  ul { list-style:none; padding:0; margin:0; }
+  .linha { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+
+  .projeto { padding:9px 11px; border-radius:10px; cursor:pointer; display:flex; gap:8px; align-items:center; border:1px solid transparent; transition:background .15s, border-color .15s; }
+  .projeto .nome { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
+  .projeto:hover { background:rgba(30,143,255,.08); }
+  .projeto .apagar { opacity:.55; }
+  .projeto .apagar:hover { opacity:1; color:var(--erro); border-color:rgba(255,93,108,.6); }
+  #bLimparProjetos:hover, #bTirarRefs:hover { color:var(--erro); border-color:rgba(255,93,108,.6); box-shadow:0 0 12px rgba(255,93,108,.2); }
+  .projeto.ativo { background:linear-gradient(90deg, rgba(30,143,255,.22), rgba(30,143,255,.04)); border-color:var(--borda-forte); box-shadow:inset 3px 0 0 var(--ciano); }
+  .fila-item { display:flex; gap:6px; align-items:center; padding:7px 0; border-top:1px solid var(--borda); }
+  .fila-item:first-child { border-top:0; }
+  .fila-item .nome { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fila-item.atual .nome { color:var(--aviso); font-weight:700; text-shadow:0 0 10px rgba(255,194,74,.4); }
+  .dica { color:var(--suave); font-size:13px; }
+
+  .config { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; }
+  .config label { font-size:12px; color:var(--suave); font-weight:600; display:grid; gap:4px; }
+  .config-formatos { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0 6px; }
+  .formato input { display:none; }
+  .formato span {
+    display:inline-flex; align-items:center; gap:9px; padding:9px 14px; border-radius:12px; cursor:pointer; font-weight:700;
+    background:#0f1b35; border:1px solid var(--borda); color:var(--suave); transition:all .15s;
+  }
+  .formato input:checked + span { color:#fff; border-color:var(--azul); background:linear-gradient(135deg, rgba(30,143,255,.28), rgba(34,211,255,.12)); box-shadow:0 0 14px rgba(30,160,255,.3); }
+  .forma { display:inline-block; border:2px solid currentColor; border-radius:3px; }
+  .forma.vertical { width:11px; height:18px; }
+  .forma.horizontal { width:20px; height:11px; }
+  .saidas { display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; }
+  .saida { min-width:0; }
+  .saida .tag { font:11px/1 var(--titulo); color:#9fd4ff; margin-right:6px; }
+  .saida video.vertical { max-width:150px; }
+  .saida video.horizontal { max-width:260px; }
+  video.final.vertical { max-width:220px; }
+  video.final.horizontal { max-width:400px; }
+  .finais { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; margin-top:8px; }
+  .refs { display:flex; gap:12px; flex-wrap:wrap; }
+  .ref { width:128px; }
+  .ref img { width:128px; height:78px; object-fit:cover; border-radius:10px; display:block; border:1px solid var(--borda-forte); box-shadow:0 0 14px rgba(30,160,255,.18); }
+  .ref .rotulo { font-size:12px; display:flex; justify-content:space-between; align-items:center; gap:4px; margin-top:5px; font-weight:600; }
+  .ref .rotulo span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .progresso { height:8px; background:#0a1326; border:1px solid var(--borda); border-radius:99px; overflow:hidden; margin:12px 0 6px; }
+  .progresso div { height:100%; background:linear-gradient(90deg, var(--azul), var(--ciano)); box-shadow:0 0 12px var(--brilho); transition:width .4s; }
+
+  .take { display:grid; grid-template-columns:46px 1fr auto; gap:12px; padding:12px 0; border-top:1px solid var(--borda); }
+  .take .num {
+    font:15px/1 var(--titulo); width:40px; height:40px; display:grid; place-items:center; border-radius:10px;
+    background:#0f1b35; border:1px solid var(--borda); color:#9fd4ff;
+  }
+  .take details summary { cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; list-style:none; }
+  .take details summary::-webkit-details-marker { display:none; }
+  .take details[open] summary { white-space:normal; }
+  .take pre.prompt { white-space:pre-wrap; font:12px/1.55 ui-monospace, Consolas, monospace; background:var(--campo); border:1px solid var(--borda); padding:10px; border-radius:10px; margin:8px 0 0; color:#c9dbf5; }
+  .status { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+  .pendente { color:var(--suave); }
+  .processando { color:var(--aviso); text-shadow:0 0 10px rgba(255,194,74,.45); }
+  .concluida { color:var(--ok); text-shadow:0 0 10px rgba(51,227,154,.35); }
+  .falhou { color:var(--erro); }
+  .erro-txt { color:var(--erro); font-size:12px; }
+  .aviso-txt { color:var(--aviso); font-size:12px; }
+  video { width:100%; max-width:220px; border-radius:10px; margin-top:8px; background:#000; display:block; border:1px solid var(--borda); }
+  video.final { max-width:300px; box-shadow:0 0 24px var(--brilho); }
+  pre.registro { background:var(--campo); border:1px solid var(--borda); border-radius:10px; padding:12px; max-height:280px; overflow:auto; font:12px/1.6 ui-monospace, Consolas, monospace; color:#b8cbe8; white-space:pre-wrap; margin:0; }
+  input[type=file] { display:none; }
+
+  #semProjeto { display:flex; align-items:center; gap:22px; overflow:hidden; }
+  #semProjeto .adesivo-grande {
+    width:150px; height:150px; border-radius:26px; object-fit:cover; flex:none; border:5px solid #fff; transform:rotate(-7deg);
+    box-shadow:0 0 0 3px var(--azul), 0 0 40px var(--brilho), 0 12px 24px rgba(0,0,0,.6);
+  }
+  #semProjeto h3 { font:20px/1.15 var(--titulo); margin:0 0 8px; text-transform:uppercase; }
+  @media (max-width:560px) { #semProjeto { flex-direction:column; text-align:center; } }
+
+  /* Abas */
+  .abas { display:flex; gap:6px; padding:4px; border-radius:12px; background:rgba(10,18,36,.7); border:1px solid var(--borda); }
+  .abas button { background:transparent; border-color:transparent; color:var(--suave); }
+  .abas button.ativa { color:#fff; background:linear-gradient(135deg, rgba(30,143,255,.3), rgba(34,211,255,.12)); border-color:var(--borda-forte); box-shadow:0 0 12px rgba(30,160,255,.25); }
+  .abas .contador { display:inline-block; min-width:20px; padding:1px 6px; margin-left:6px; border-radius:99px; background:var(--azul); color:#fff; font-size:11px; }
+
+  /* Tela da fila */
+  .vista-fila { display:grid; gap:18px; padding:18px 22px 28px; max-width:1500px; margin:0 auto; }
+  @media (max-width:880px) { .vista-fila { padding:14px 16px; } }
+  .hero { display:flex; align-items:center; gap:20px; flex-wrap:wrap; overflow:hidden; }
+  .hero::after { content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
+    background:radial-gradient(500px 200px at 100% 50%, rgba(34,211,255,.16), transparent 70%); }
+  .hero .texto { flex:1; min-width:240px; }
+  .hero h3 { margin:0; font:30px/1.1 var(--titulo); }
+  .hero h3 span { color:var(--ciano); text-shadow:0 0 18px var(--brilho); }
+  .hero p { margin:6px 0 0; color:var(--suave); }
+  .hero .acoes { display:flex; gap:8px; flex-wrap:wrap; position:relative; z-index:1; }
+  .hero .adesivo { width:72px; height:72px; }
+  .numeros { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:0; padding:0; }
+  .numeros > div { padding:16px 20px; border-left:1px solid var(--borda); min-width:0; }
+  .numeros > div:first-child { border-left:0; }
+  .numeros small { display:block; color:var(--suave); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+  .numeros b { display:block; font:26px/1.2 var(--titulo); margin-top:6px; }
+  .numeros b em { font:500 14px "Exo 2", sans-serif; color:var(--suave); font-style:normal; margin-left:6px; }
+  .numeros .pilula { display:inline-block; margin-top:10px; }
+  .agora { color:var(--aviso); font-size:12px; margin-top:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .titulo-ordem { display:flex; align-items:end; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:-6px; }
+  .titulo-ordem h3 { margin:0; font:18px/1.2 var(--titulo); }
+  .titulo-ordem p { margin:2px 0 0; }
+  .cartoes { display:grid; gap:12px; }
+  .cartao { display:grid; grid-template-columns:18px 64px 1fr auto; gap:16px; align-items:center; padding:14px 18px; }
+  .cartao.atual { border-color:rgba(255,194,74,.6); box-shadow:0 0 22px rgba(255,194,74,.18), 0 10px 30px rgba(0,0,0,.4); }
+  .cartao.arrastando { opacity:.4; }
+  .cartao.alvo { border-color:var(--ciano); box-shadow:0 0 0 2px var(--ciano); }
+  .alca { cursor:grab; color:#41567c; font-size:18px; line-height:1; user-select:none; text-align:center; }
+  .alca:active { cursor:grabbing; }
+  .capa { width:64px; height:80px; border-radius:10px; object-fit:cover; border:1px solid var(--borda-forte); background:#0a1326; cursor:pointer; }
+  .cartao .info { min-width:0; }
+  .cartao .cima { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .cartao .nome { font-weight:700; font-size:15px; text-transform:uppercase; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+  .cartao .nome:hover { color:var(--ciano); }
+  .cartao .detalhes { color:var(--suave); font-size:12px; margin-top:4px; }
+  .cartao .progresso { margin:10px 0 0; }
+  .cartao .direita { display:grid; justify-items:end; gap:8px; }
+  .cartao .pct { font:22px/1 var(--titulo); }
+  .cartao .botoes { display:flex; gap:6px; }
+  .selo { font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; border:1px solid; white-space:nowrap; }
+  .selo::before { content:"●"; margin-right:5px; font-size:9px; vertical-align:1px; }
+  .selo.concluido { color:var(--ok); border-color:rgba(51,227,154,.45); background:rgba(51,227,154,.08); }
+  .selo.gerando { color:var(--aviso); border-color:rgba(255,194,74,.5); background:rgba(255,194,74,.08); }
+  .selo.pausado { color:#ffa64a; border-color:rgba(255,166,74,.45); background:rgba(255,166,74,.07); }
+  .selo.falha { color:var(--erro); border-color:rgba(255,93,108,.45); background:rgba(255,93,108,.08); }
+  .selo.espera { color:var(--suave); border-color:var(--borda); }
+  .cartao.concluido .progresso div { background:linear-gradient(90deg, #1fbf7a, var(--ok)); box-shadow:0 0 12px rgba(51,227,154,.4); }
+  @media (max-width:640px) {
+    .cartao { grid-template-columns:52px 1fr; gap:12px; padding:12px; }
+    .alca { display:none; }
+    .capa { width:52px; height:66px; }
+    .cartao .direita { grid-column:1 / -1; grid-template-columns:1fr auto; align-items:center; justify-items:start; }
+    .numeros > div { border-left:0; border-top:1px solid var(--borda); }
+    .numeros > div:first-child { border-top:0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="marca">
+    <img class="adesivo" src="/assets/coala-adesivo.webp" alt="Coalinha" />
+    <div>
+      <h1>Novelinhas <span>do Koala</span></h1>
+      <small>Grandes histórias, um take de cada vez. 🐨🎬</small>
+    </div>
+  </div>
+  <nav class="abas">
+    <button data-aba="projetos" class="ativa">Projetos</button>
+    <button data-aba="fila">Fila de produção<span id="contFila" class="contador" hidden></span></button>
+  </nav>
+  <span id="pNavegador" class="pilula">navegador fechado</span>
+  <span id="pFila" class="pilula">fila parada</span>
+  <button id="bNavegador" class="primario">Abrir navegador e fazer login</button>
+</header>
+<main>
+  <div class="coluna">
+    <section>
+      <h2>Projetos</h2>
+      <ul id="listaProjetos"></ul>
+      <div class="linha">
+        <label class="botao primario">Importar projetos (.zip)
+          <input id="arqImportar" type="file" accept=".zip,.txt,image/png,image/jpeg,image/webp" multiple />
+        </label>
+      </div>
+      <label class="dica linha"><input id="autoFila" type="checkbox" checked style="width:auto;display:inline" /> Adicionar à fila ao importar</label>
+      <div class="dica">Até 10 episódios por vez — cada .zip vira um projeto.</div>
+      <div id="importando" class="dica"></div>
+      <div class="linha"><input id="nomeProjeto" placeholder="Ou crie um projeto vazio" /><button id="bCriar">Criar</button></div>
+      <div class="linha"><button id="bLimparProjetos">Limpar todos os projetos</button></div>
+    </section>
+    <section>
+      <h2>Fila de produção</h2>
+      <div id="miniFila" class="dica"></div>
+      <div class="linha"><button data-aba="fila">Abrir a fila</button></div>
+    </section>
+  </div>
+
+  <div class="coluna">
+    <section id="semProjeto">
+      <img class="adesivo-grande" src="/assets/coala-adesivo.webp" alt="Coalinha" />
+      <div>
+        <h3>Bora gravar uma novelinha?</h3>
+        <p class="dica" style="margin:0">Importe o <b>.zip</b> de um episódio (com o <code>prompts.txt</code> e as imagens de personagens e cenário) ou escolha um projeto à esquerda. Depois clique em <b>Abrir navegador e fazer login</b> e entre na sua conta do Leonardo.</p>
+      </div>
+    </section>
+
+    <div id="painelProjeto" class="coluna" hidden>
+      <section>
+        <div class="linha" style="margin-top:0">
+          <h2 id="tituloProjeto" style="flex:1;margin:0;text-transform:none;letter-spacing:0;font-size:18px;color:var(--texto)"></h2>
+          <button id="bFila">Adicionar à fila</button>
+        </div>
+        <div class="progresso"><div id="barra" style="width:0"></div></div>
+        <div id="resumo" class="dica"></div>
+        <div id="final"></div>
+      </section>
+
+      <section>
+        <h2>Configurações do vídeo</h2>
+        <div class="config">
+          <label>Modelo<input data-config="modelo" placeholder="MiniMax H3" /></label>
+          <label>Velocidade<input data-config="modo" list="opModo" placeholder="Accelerated" /></label>
+          <label>Resolução<input data-config="resolucao" list="opResolucao" placeholder="480p" /></label>
+          <label>Duração (s)<input data-config="duracao" type="number" min="1" max="60" placeholder="15" /></label>
+        </div>
+        <datalist id="opModo"><option value="Standard"><option value="Accelerated"><option value="Turbo"></datalist>
+        <datalist id="opResolucao"><option value="480p"><option value="HD"><option value="2K"><option value="4K"></datalist>
+        <div class="config-formatos">
+          <span class="dica">Formato:</span>
+          <label class="formato"><input type="radio" name="formato" data-formato="9:16" /><span><i class="forma vertical"></i>9:16 vertical</span></label>
+          <label class="formato"><input type="radio" name="formato" data-formato="16:9" /><span><i class="forma horizontal"></i>16:9 horizontal</span></label>
+        </div>
+        <div class="dica">Escolha um formato: ao clicar em um, o outro desliga. Os takes e o vídeo final saem nesse formato.</div>
+        <div class="linha"><button id="bSalvarConfig">Salvar configurações</button><span id="configSalva" class="dica"></span></div>
+      </section>
+
+      <section>
+        <h2>Referências globais (personagens e cenário)</h2>
+        <div id="refs" class="refs"></div>
+        <div class="linha">
+          <label class="botao">Adicionar referência<input id="arqRef" type="file" accept="image/png,image/jpeg,image/webp" multiple /></label>
+          <button id="bTirarRefs">Tirar todas</button>
+          <span class="dica">Enviadas ao Leonardo uma vez por projeto e conferidas antes de cada take.</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Takes</h2>
+        <div id="takes"></div>
+        <details style="margin-top:12px">
+          <summary class="dica" style="cursor:pointer">Adicionar take manualmente</summary>
+          <textarea id="prompt" placeholder="Prompt do take…" style="margin-top:8px"></textarea>
+          <div class="linha">
+            <label class="botao">Quadro inicial (opcional)<input id="quadro" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+            <span id="quadroNome" class="dica"></span>
+            <button id="bAdicionar">Adicionar take</button>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <section><h2>Registro</h2><pre id="registro" class="registro">—</pre></section>
+  </div>
+</main>
+
+<div id="vistaFila" class="vista-fila" hidden>
+  <section class="hero">
+    <img class="adesivo" src="/assets/coala-adesivo.webp" alt="" />
+    <div class="texto">
+      <h3>Sua produção, <span>em fluxo.</span></h3>
+      <p>A fila, o progresso de cada episódio e o que vem a seguir.</p>
+    </div>
+    <div class="acoes">
+      <button id="bIniciar" class="primario">▶ Iniciar fila</button>
+      <button id="bParar">⏸ Pausar fila</button>
+      <button id="bPastaProjetos">📁 Abrir novelas</button>
+    </div>
+  </section>
+
+  <section class="numeros">
+    <div><small>Visão da fila</small><b id="nProjetos">0<em>projetos</em></b></div>
+    <div><small>Vídeos concluídos</small><b id="nVideos">0</b></div>
+    <div><small>Tempo produzido</small><b id="nTempo">0 min</b></div>
+    <div><small>Situação</small><span id="nSituacao" class="pilula">parada</span><div id="nAgora" class="agora"></div></div>
+  </section>
+
+  <div class="titulo-ordem">
+    <div>
+      <h3>Ordem de produção</h3>
+      <p class="dica">Um episódio completo por vez, em ordem. Arraste pela alça ⋮⋮ para reorganizar.</p>
+    </div>
+  </div>
+  <div id="cartoes" class="cartoes"></div>
+
+  <section><h2>Registro</h2><pre id="registroFila" class="registro">—</pre></section>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+let projetoAtual = null;
+let projetos = [];
+let estado = null;
+
+async function api(metodo, url, corpo) {
+  const r = await fetch(url, { method: metodo, headers: { "Content-Type": "application/json" }, body: corpo ? JSON.stringify(corpo) : undefined });
+  const dados = await r.json();
+  if (!r.ok) throw new Error(dados.erro || "Erro");
+  return dados;
+}
+const tentar = (fn) => async (...a) => { try { await fn(...a); } catch (e) { alert(e.message); } };
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const ROTULO = { pendente:"pendente", processando:"gerando…", concluida:"aprovado", falhou:"falhou" };
+const lerArquivo = (f) => new Promise((ok, falha) => { const r = new FileReader(); r.onload = () => ok({ nome: f.name, base64: r.result.split(",")[1] }); r.onerror = falha; r.readAsDataURL(f); });
+const nomeProjeto = (id) => projetos.find((p) => p.id === id)?.nome ?? id;
+
+async function carregarProjetos() {
+  projetos = await api("GET", "/api/projetos");
+  const naFila = new Set(estado?.fila.projetos ?? []);
+  $("listaProjetos").innerHTML = projetos.map((p) => `
+    <li class="projeto ${p.id === projetoAtual ? "ativo" : ""}" data-id="${p.id}">
+      <span class="nome" title="${esc(p.nome)}">${esc(p.nome)}</span>
+      <span class="dica">${p.formatos.join(" + ")} · ${p.status.concluida}/${p.cenas}${Object.keys(p.videosFinais).length ? " 🎬" : ""}${naFila.has(p.id) ? " ⏳" : ""}</span>
+      <button class="mini apagar" data-apagar="${p.id}" title="Apagar este projeto">×</button>
+    </li>`).join("") || '<li class="dica">Nenhum projeto ainda.</li>';
+  document.querySelectorAll(".projeto").forEach((li) => li.onclick = () => abrirProjeto(li.dataset.id));
+  document.querySelectorAll("[data-apagar]").forEach((b) => b.onclick = tentar(async (e) => {
+    e.stopPropagation();
+    const nome = nomeProjeto(b.dataset.apagar);
+    if (!confirm(`Apagar o projeto "${nome}"?\n\nOs takes, as referências e os vídeos dele também serão apagados. Isso não pode ser desfeito.`)) return;
+    await apagarProjetos([b.dataset.apagar]);
+  }));
+  $("bLimparProjetos").disabled = !projetos.length;
+  if (estado) desenharFila();
+}
+
+// ---------- Abas ----------
+function mostrarAba(aba) {
+  document.querySelector("main").hidden = aba !== "projetos";
+  $("vistaFila").hidden = aba !== "fila";
+  document.querySelectorAll(".abas [data-aba]").forEach((b) => b.classList.toggle("ativa", b.dataset.aba === aba));
+  try { localStorage.setItem("aba", aba); } catch {}
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("[data-aba]").forEach((b) => b.onclick = () => mostrarAba(b.dataset.aba));
+
+// ---------- Fila de produção ----------
+const minutos = (s) => { const m = s / 60; return `${m >= 10 || Number.isInteger(m) ? Math.round(m) : m.toFixed(1).replace(".", ",")} min`; };
+let arrastando = null;
+let ultimosCartoes = "";
+
+function seloProjeto(p, f) {
+  if (f.rodando && f.projetoAtual === p.id) return ["gerando", f.pararPedido ? "Pausando…" : "Gerando"];
+  if (p.totalVideos && p.videos === p.totalVideos) return ["concluido", "Concluído"];
+  if (p.status.falhou) return ["falha", "Com falha"];
+  if (p.videos) return ["pausado", "Pausado"];
+  return ["espera", "Na fila"];
+}
+
+function desenharFila() {
+  const f = estado.fila;
+  const naFila = f.projetos.map((id) => projetos.find((p) => p.id === id) ?? { id, nome: id, videos: 0, totalVideos: 0, segundosConcluidos: 0, status: {}, formatos: [] });
+
+  // Contador da aba e resumo na tela de projetos.
+  $("contFila").hidden = !naFila.length; $("contFila").textContent = naFila.length;
+  const atual = naFila.find((p) => f.rodando && p.id === f.projetoAtual);
+  $("miniFila").textContent = !naFila.length ? "Vazia. Abra um projeto e clique em \"Adicionar à fila\"."
+    : `${naFila.length} episódio(s) na fila${atual ? ` · gerando ${atual.nome}` : f.rodando ? " · rodando" : " · parada"}.`;
+
+  // Números do topo.
+  $("nProjetos").innerHTML = `${naFila.length}<em>${naFila.length === 1 ? "projeto" : "projetos"}</em>`;
+  $("nVideos").textContent = naFila.reduce((s, p) => s + p.videos, 0);
+  $("nTempo").textContent = minutos(naFila.reduce((s, p) => s + p.segundosConcluidos, 0));
+  $("nSituacao").textContent = f.rodando ? (f.pararPedido ? "pausando após o take" : "rodando") : "parada";
+  $("nSituacao").classList.toggle("on", f.rodando);
+  $("nAgora").textContent = atual ? `Agora: ${atual.nome}${f.formatoAtual ? ` · ${f.formatoAtual}` : ""}` : "";
+  $("bIniciar").disabled = f.rodando || !naFila.length;
+  $("bParar").disabled = !f.rodando || f.pararPedido;
+
+  if (arrastando) return; // não redesenha os cartões no meio de um arraste
+  const html = naFila.map((p) => {
+    const [classe, rotulo] = seloProjeto(p, f);
+    const pct = p.totalVideos ? Math.round((p.videos / p.totalVideos) * 100) : 0;
+    const capa = p.capa ? `/referencias/${p.id}/${encodeURIComponent(p.capa)}` : "/assets/coala-adesivo.webp";
+    return `
+    <section class="cartao ${classe} ${classe === "gerando" ? "atual" : ""}" data-id="${p.id}">
+      <span class="alca" draggable="true" title="Arraste para mudar a ordem">⋮⋮</span>
+      <img class="capa" src="${capa}" alt="" data-abrir="${p.id}" loading="lazy">
+      <div class="info">
+        <div class="cima"><span class="nome" data-abrir="${p.id}" title="${esc(p.nome)}">${esc(p.nome)}</span><span class="selo ${classe}">${rotulo}</span></div>
+        <div class="detalhes">${p.videos} / ${p.totalVideos} vídeos · ${minutos(p.segundosConcluidos)} concluídos${p.formatos.length ? ` · ${p.formatos.join(" + ")}` : ""}${p.status.falhou ? ` · ${p.status.falhou} take(s) com falha` : ""}</div>
+        <div class="progresso"><div style="width:${pct}%"></div></div>
+      </div>
+      <div class="direita">
+        <span class="pct">${pct}%</span>
+        <div class="botoes">
+          <button class="mini" data-pasta="${p.id}" title="Abrir a pasta dos vídeos">📁</button>
+          <button class="mini" data-tirar="${p.id}" title="Tirar da fila" ${classe === "gerando" ? "disabled" : ""}>×</button>
+        </div>
+      </div>
+    </section>`;
+  }).join("") || `<section id="filaVazia" style="display:flex;align-items:center;gap:18px">
+      <img class="adesivo" src="/assets/coala-adesivo.webp" alt="">
+      <div><b>A fila está vazia.</b><div class="dica">Importe episódios com "Adicionar à fila ao importar" marcado, ou abra um projeto e clique em "Adicionar à fila".</div></div>
+    </section>`;
+  if (html === ultimosCartoes) return;
+  ultimosCartoes = html;
+  $("cartoes").innerHTML = html;
+
+  document.querySelectorAll("[data-abrir]").forEach((el) => el.onclick = () => { mostrarAba("projetos"); abrirProjeto(el.dataset.abrir); });
+  document.querySelectorAll("[data-pasta]").forEach((b) => b.onclick = tentar(() => api("POST", `/api/projetos/${b.dataset.pasta}/abrir-pasta`)));
+  document.querySelectorAll("[data-tirar]").forEach((b) => b.onclick = tentar(async () => {
+    if (!confirm(`Tirar "${nomeProjeto(b.dataset.tirar)}" da fila? O projeto e os vídeos continuam salvos.`)) return;
+    estado.fila = await api("POST", `/api/fila/remover/${b.dataset.tirar}`); desenharFila(); carregarProjetos();
+  }));
+  ligarArraste();
+}
+
+// Arrastar e soltar os cartões pela alça.
+function ligarArraste() {
+  const cartoes = [...document.querySelectorAll(".cartao")];
+  cartoes.forEach((c) => {
+    const alca = c.querySelector(".alca");
+    alca.ondragstart = (e) => { arrastando = c.dataset.id; c.classList.add("arrastando"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", arrastando); e.dataTransfer.setDragImage(c, 30, 30); };
+    alca.ondragend = () => { arrastando = null; ultimosCartoes = ""; desenharFila(); };
+    c.ondragover = (e) => { if (!arrastando || arrastando === c.dataset.id) return; e.preventDefault(); cartoes.forEach((x) => x.classList.toggle("alvo", x === c)); };
+    c.ondragleave = () => c.classList.remove("alvo");
+    c.ondrop = tentar(async (e) => {
+      e.preventDefault();
+      const de = arrastando; arrastando = null;
+      ultimosCartoes = "";
+      if (!de || de === c.dataset.id) return desenharFila();
+      const ids = estado.fila.projetos.filter((id) => id !== de);
+      const alvo = estado.fila.projetos.indexOf(c.dataset.id) > estado.fila.projetos.indexOf(de) ? ids.indexOf(c.dataset.id) + 1 : ids.indexOf(c.dataset.id);
+      ids.splice(alvo, 0, de);
+      estado.fila = await api("POST", "/api/fila/ordem", { ids });
+      desenharFila();
+    });
+  });
+}
+$("bPastaProjetos").onclick = tentar(() => api("POST", "/api/abrir-pasta-projetos"));
+
+function desenharConfig(p) {
+  document.querySelectorAll("[data-config]").forEach((i) => i.value = p.config[i.dataset.config] ?? "");
+  // Um formato por vez: projetos antigos com os dois marcados mostram o primeiro.
+  const escolhido = p.config.formatos[0] ?? "9:16";
+  document.querySelectorAll("[data-formato]").forEach((i) => i.checked = i.dataset.formato === escolhido);
+  $("configSalva").textContent = "";
+}
+
+$("bTirarRefs").onclick = tentar(async () => {
+  const p = await api("GET", `/api/projetos/${projetoAtual}`);
+  if (!p.referencias.length) return;
+  if (!confirm(`Tirar as ${p.referencias.length} referências deste projeto?`)) return;
+  let atual = p;
+  for (const r of p.referencias) atual = await api("DELETE", `/api/projetos/${p.id}/referencias/${encodeURIComponent(r.arquivo)}`);
+  desenharRefs(atual);
+});
+
+function desenharRefs(p) {
+  $("bTirarRefs").disabled = !p.referencias.length;
+  $("refs").innerHTML = p.referencias.map((r) => `
+    <div class="ref">
+      <img src="/referencias/${p.id}/${encodeURIComponent(r.arquivo)}" alt="${esc(r.rotulo)}" loading="lazy">
+      <div class="rotulo"><span title="${esc(r.rotulo)}">${esc(r.rotulo)}</span><button class="mini" data-ref="${esc(r.arquivo)}">×</button></div>
+    </div>`).join("") || '<p class="dica" style="margin:0">Nenhuma referência.</p>';
+  document.querySelectorAll("[data-ref]").forEach((b) => b.onclick = tentar(async () => {
+    if (!confirm(`Remover a referência ${b.dataset.ref}?`)) return;
+    desenharRefs(await api("DELETE", `/api/projetos/${p.id}/referencias/${encodeURIComponent(b.dataset.ref)}`));
+  }));
+}
+
+function desenharTakes(p) {
+  const total = p.cenas.length;
+  const cont = (s) => p.cenas.filter((c) => c.status === s).length;
+  $("barra").style.width = total ? `${(cont("concluida") / total) * 100}%` : "0";
+  $("resumo").textContent = total ? `${cont("concluida")} de ${total} takes aprovados · ${cont("pendente")} pendentes · ${cont("falhou")} com falha` : "Sem takes.";
+  const url = (arquivo) => `/videos/${p.id}/${encodeURIComponent(arquivo)}`;
+  const classe = (f) => (f === "16:9" ? "horizontal" : "vertical");
+  const finais = p.config.formatos.filter((f) => p.videosFinais[f]);
+  $("final").innerHTML = finais.length ? `<div class="finais">${finais.map((f) => `
+    <div><div><b>🎬 Final ${f}:</b> <a href="${url(p.videosFinais[f])}" download>${esc(p.videosFinais[f])}</a></div>
+    <video class="final ${classe(f)}" controls preload="metadata" src="${url(p.videosFinais[f])}?v=${Date.now()}"></video></div>`).join("")}</div>` : "";
+
+  const desenharSaida = (c, f) => {
+    const s = c.saidas[f] ?? { status: "pendente", tentativas: 0 };
+    return `<div class="saida">
+      ${p.config.formatos.length > 1 ? `<span class="tag">${f}</span>` : ""}<span class="status ${s.status}">${ROTULO[s.status]}${s.tentativas ? ` · ${s.tentativas} tentativa(s)` : ""}</span>
+      ${s.status === "falhou" || s.status === "concluida" ? `<button class="mini" data-reabrir="${c.id}" data-formato-take="${f}">Refazer</button>` : ""}
+      ${s.qualidade?.avisos?.length ? `<div class="aviso-txt">⚠ ${esc(s.qualidade.avisos.join(", "))}</div>` : ""}
+      ${s.erro ? `<div class="erro-txt">${esc(s.erro)}</div>` : ""}
+      ${s.video ? `<video class="${classe(f)}" controls preload="none" src="${url(s.video)}"></video>` : ""}
+    </div>`;
+  };
+  $("takes").innerHTML = p.cenas.map((c) => `
+    <div class="take" id="take-${c.id}">
+      <span class="num">${String(c.numero ?? "").padStart(2, "0")}</span>
+      <div style="min-width:0">
+        <details><summary>${esc(c.prompt.split("\n").find((l) => /ACTION|DIALOGUE/i.test(l)) ?? c.prompt.split("\n")[0])}</summary><pre class="prompt">${esc(c.prompt)}</pre></details>
+        ${c.duracao ? `<span class="dica">${c.duracao}s</span>` : ""}
+        <div class="saidas">${p.config.formatos.map((f) => desenharSaida(c, f)).join("")}</div>
+      </div>
+      <div class="linha" style="margin:0;align-items:start">
+        <button class="mini" data-remover="${c.id}">Remover</button>
+      </div>
+    </div>`).join("") || '<p class="dica">Sem takes.</p>';
+  document.querySelectorAll("[data-remover]").forEach((b) => b.onclick = tentar(async () => { if (confirm("Remover este take?")) desenharTakes(await api("DELETE", `/api/projetos/${p.id}/cenas/${b.dataset.remover}`)); }));
+  document.querySelectorAll("[data-reabrir]").forEach((b) => b.onclick = tentar(async () => { desenharTakes(await api("POST", `/api/projetos/${p.id}/cenas/${b.dataset.reabrir}/reabrir`, { formato: b.dataset.formatoTake })); estado = await api("GET", "/api/estado"); carregarProjetos(); }));
+}
+
+async function abrirProjeto(id) {
+  projetoAtual = id;
+  const p = await api("GET", `/api/projetos/${id}`);
+  $("semProjeto").hidden = true; $("painelProjeto").hidden = false;
+  $("tituloProjeto").textContent = p.nome;
+  desenharConfig(p); desenharRefs(p); desenharTakes(p);
+  carregarProjetos();
+}
+
+// Atualiza só a lista de takes (não mexe nos campos que você pode estar editando).
+async function atualizarTakes() {
+  if (!projetoAtual) return;
+  const abertos = new Set([...document.querySelectorAll(".take details[open]")].map((d) => d.closest(".take").id));
+  if ([...document.querySelectorAll("video")].some((v) => !v.paused)) return;
+  desenharTakes(await api("GET", `/api/projetos/${projetoAtual}`));
+  abertos.forEach((id) => document.querySelector(`#${id} details`)?.setAttribute("open", ""));
+}
+
+async function apagarProjetos(ids) {
+  const erros = [];
+  for (const id of ids) {
+    try { await api("DELETE", `/api/projetos/${id}`); }
+    catch (erro) { erros.push(`${nomeProjeto(id)}: ${erro.message}`); }
+  }
+  if (ids.includes(projetoAtual)) {
+    projetoAtual = null;
+    $("painelProjeto").hidden = true; $("semProjeto").hidden = false;
+  }
+  estado = await api("GET", "/api/estado");
+  await carregarProjetos();
+  if (erros.length) alert(`Não foi possível apagar:\n\n${erros.join("\n")}`);
+}
+$("bLimparProjetos").onclick = tentar(async () => {
+  if (!projetos.length) return;
+  if (!confirm(`Apagar TODOS os ${projetos.length} projetos?\n\nOs takes, as referências e os vídeos de todos eles também serão apagados. Isso não pode ser desfeito.`)) return;
+  await apagarProjetos(projetos.map((p) => p.id));
+});
+
+const MAX_IMPORTACAO = 10;
+// Cada .zip vira um projeto; arquivos soltos (prompts.txt + imagens) formam um projeto só.
+$("arqImportar").onchange = async (e) => {
+  const arquivos = [...e.target.files]; e.target.value = "";
+  if (!arquivos.length) return;
+  const zips = arquivos.filter((f) => /\.zip$/i.test(f.name)).sort((a, b) => a.name.localeCompare(b.name, "pt-BR", { numeric: true }));
+  const soltos = arquivos.filter((f) => !/\.zip$/i.test(f.name));
+  const lotes = [...zips.map((z) => [z]), ...(soltos.length ? [soltos] : [])];
+  if (lotes.length > MAX_IMPORTACAO) return alert(`Escolha no máximo ${MAX_IMPORTACAO} projetos por vez (você escolheu ${lotes.length}).`);
+
+  const autoFila = $("autoFila").checked;
+  const erros = [];
+  let ultimo = null;
+  for (const [i, lote] of lotes.entries()) {
+    $("importando").textContent = `Importando ${i + 1} de ${lotes.length}: ${lote[0].name}…`;
+    try {
+      const p = await api("POST", "/api/importar", { arquivos: await Promise.all(lote.map(lerArquivo)) });
+      if (autoFila) estado.fila = await api("POST", `/api/fila/adicionar/${p.id}`);
+      ultimo = p.id;
+    } catch (erro) {
+      erros.push(`${lote[0].name}: ${erro.message}`);
+    }
+  }
+  const ok = lotes.length - erros.length;
+  $("importando").textContent = `${ok} de ${lotes.length} projeto(s) importado(s)${autoFila && ok ? " e adicionado(s) à fila" : ""}.`;
+  if (erros.length) alert(`Alguns projetos não foram importados:\n\n${erros.join("\n")}`);
+  if (ultimo) abrirProjeto(ultimo);
+  if (estado) desenharFila();
+};
+$("bCriar").onclick = tentar(async () => { const p = await api("POST", "/api/projetos", { nome: $("nomeProjeto").value }); $("nomeProjeto").value = ""; abrirProjeto(p.id); });
+$("bSalvarConfig").onclick = tentar(async () => {
+  const config = Object.fromEntries([...document.querySelectorAll("[data-config]")].map((i) => [i.dataset.config, i.value]));
+  config.formatos = [...document.querySelectorAll("[data-formato]:checked")].map((i) => i.dataset.formato);
+  const p = await api("POST", `/api/projetos/${projetoAtual}/config`, config);
+  desenharConfig(p); desenharTakes(p); carregarProjetos();
+  $("configSalva").textContent = "Salvo ✓";
+});
+$("arqRef").onchange = tentar(async (e) => {
+  let p;
+  for (const f of e.target.files) p = await api("POST", `/api/projetos/${projetoAtual}/referencias`, await lerArquivo(f));
+  e.target.value = "";
+  if (p) desenharRefs(p);
+});
+$("quadro").onchange = (e) => $("quadroNome").textContent = e.target.files[0]?.name ?? "";
+$("bAdicionar").onclick = tentar(async () => {
+  const f = $("quadro").files[0];
+  desenharTakes(await api("POST", `/api/projetos/${projetoAtual}/cenas`, { prompt: $("prompt").value, quadroInicial: f ? await lerArquivo(f) : null }));
+  $("prompt").value = ""; $("quadro").value = ""; $("quadroNome").textContent = "";
+});
+$("bFila").onclick = tentar(async () => { estado.fila = await api("POST", `/api/fila/adicionar/${projetoAtual}`); desenharFila(); carregarProjetos(); });
+$("bNavegador").onclick = tentar(async () => { $("bNavegador").disabled = true; try { await api("POST", "/api/navegador/abrir"); } finally { $("bNavegador").disabled = false; } });
+$("bIniciar").onclick = tentar(async () => { estado.fila = await api("POST", "/api/fila/iniciar"); desenharFila(); });
+$("bParar").onclick = tentar(async () => { estado.fila = await api("POST", "/api/fila/parar"); desenharFila(); });
+
+let ultimoRegistro = "";
+async function atualizarEstado() {
+  try {
+    estado = await api("GET", "/api/estado");
+    $("pNavegador").textContent = estado.navegador ? "navegador aberto" : "navegador fechado";
+    $("pNavegador").classList.toggle("on", estado.navegador);
+    $("pFila").textContent = estado.fila.rodando ? "fila rodando" : "fila parada";
+    $("pFila").classList.toggle("on", estado.fila.rodando);
+    desenharFila();
+    const texto = estado.fila.registros.join("\n") || "—";
+    if (texto !== ultimoRegistro) {
+      ultimoRegistro = texto;
+      for (const r of [$("registro"), $("registroFila")]) { r.textContent = texto; r.scrollTop = 1e9; }
+      carregarProjetos(); atualizarTakes();
+    }
+  } catch {}
+}
+try { if (localStorage.getItem("aba") === "fila") mostrarAba("fila"); } catch {}
+atualizarEstado().then(carregarProjetos);
+setInterval(atualizarEstado, 2000);
+</script>
+</body>
+</html>

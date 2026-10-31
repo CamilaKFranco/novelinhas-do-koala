@@ -1,0 +1,15 @@
+# Dependências (são baixadas com npm install)
+node_modules/
+
+# Dados pessoais: projetos, vídeos e o login do navegador
+dados/
+
+# Instaladores gerados pelo build
+instalador/
+
+# FFmpeg (baixe o seu, veja o README)
+vendor/
+
+# Configurações locais
+.claude/
+*.log

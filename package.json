@@ -1,0 +1,61 @@
+{
+  "name": "novela-studio",
+  "productName": "Novelinhas do Koala",
+  "version": "0.8.1",
+  "private": true,
+  "description": "Fila de produção de cenas em vídeo que controla o seu navegador logado na sua própria conta do Leonardo.",
+  "author": "Koala",
+  "type": "module",
+  "main": "electron/main.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "app": "electron .",
+    "instalador": "electron-builder --win nsis"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "playwright-core": "^1.56.0"
+  },
+  "devDependencies": {
+    "electron": "^45.2.0",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "local.koala.novelastudio",
+    "productName": "Novelinhas do Koala",
+    "icon": "build/icon.png",
+    "directories": {
+      "output": "instalador"
+    },
+    "files": [
+      "electron/**",
+      "src/**",
+      "public/**",
+      "config/**",
+      "build/icon.png",
+      "server.mjs",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "vendor/ffmpeg", "to": "ffmpeg" }
+    ],
+    "asarUnpack": [
+      "node_modules/playwright-core/**"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Novelinhas do Koala",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

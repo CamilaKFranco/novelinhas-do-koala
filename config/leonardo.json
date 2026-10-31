@@ -1,0 +1,67 @@
+{
+  "urlInicio": "https://app.leonardo.ai/",
+  "urlEditorVideo": "https://app.leonardo.ai/image-generation/video",
+  "textos": {
+    "login": "Log in|Sign in|Entrar",
+    "gerar": "^Generate|^Gerar",
+    "tituloPainelReferencia": "^\\s*Reference\\s*$",
+    "cartaoReferenciaImagem": "^\\s*Image\\s*Reference",
+    "cartaoStartFrame": "^\\s*Start frame",
+    "abaVideo": "^\\s*Video\\s*$",
+    "tituloSelecaoMidia": "Select Media",
+    "abaUploads": "^\\s*Your Uploads\\s*$",
+    "uploadImagem": "Upload an image",
+    "selecionados": "(\\d+)\\s*/\\s*(\\d+)\\s*selected",
+    "confirmar": "^\\s*Confirm\\s*$"
+  },
+  "seletores": {
+    "prompt": "textarea, [contenteditable='true']",
+    "botaoReferencias": "button[aria-label*='reference' i], button[aria-label*='image' i], button[title*='reference' i]",
+    "itemMidia": "img",
+    "miniaturaReferencia": "img",
+    "itemSelecionado": "[aria-selected='true'], [aria-checked='true'], [data-state='checked'], [data-selected='true']",
+    "parametroReferenciasUrl": "imageGuidance"
+  },
+  "configuracao": [
+    {
+      "campo": "modelo",
+      "tipo": "menu",
+      "abrir": "^Model$",
+      "opcao": "^\\s*{valor}\\s*$"
+    },
+    {
+      "campo": "duracao",
+      "tipo": "slider",
+      "rotulo": "^Duration"
+    },
+    {
+      "campo": "modo",
+      "tipo": "botao",
+      "opcao": "^\\s*{valor}\\b"
+    },
+    {
+      "campo": "proporcao",
+      "tipo": "botao",
+      "opcao": "^\\s*{valor}\\s*$"
+    },
+    {
+      "campo": "resolucao",
+      "tipo": "botao",
+      "opcao": "^\\s*{valor}\\b"
+    }
+  ],
+  "tempos": {
+    "esperaAposCarregarMs": 4000,
+    "maximoGeracaoMs": 900000,
+    "pausaEntreCenasMs": [
+      20000,
+      45000
+    ]
+  },
+  "tentativasPorCena": 3,
+  "qualidade": {
+    "toleranciaDuracaoS": 2,
+    "maxProporcaoPreta": 0.5,
+    "tamanhoMinimoKB": 100
+  }
+}
