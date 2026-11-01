@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { DADOS } from "./caminhos.mjs";
 import { lerConfig } from "./config.mjs";
 import { juntarVideos, verificarVideo } from "./ffmpeg.mjs";
-import { gerarCena, prepararEditor, verificarLogin } from "./leonardo.mjs";
+import { gerarCena, prepararEditor, verificarLogin, tentarComReinicio } from "./leonardo.mjs";
 import { paginaPrincipal } from "./navegador.mjs";
 import {
   adaptarPrompt,
@@ -158,18 +158,26 @@ async function processarProjeto(page, projetoId) {
       await atualizarSaida(projetoId, cena.id, formato, { status: "processando", tentativas: tentativa, erro: null });
 
       try {
-        if (!preparado) {
-          await prepararEditor(page, { config: { ...projeto.config, proporcao: formato }, referencias, log });
-          preparado = true;
-        }
-        const video = await gerarCena(page, {
-          prompt: adaptarPrompt(cena.prompt, formato),
-          arquivo: `take-${String(cena.numero).padStart(2, "0")}_${sufixoFormato(formato)}.mp4`,
-          referencias,
-          caminhoQuadroInicial: cena.quadroInicial ? caminhoEntrada(projetoId, cena.quadroInicial) : null,
-          pastaSaida: pastaVideos(projetoId),
-          log,
+        // === INÍCIO DA PROTEÇÃO ANTI-ERRO COM F5 ===
+        // O robô vai tentar configurar e gerar o vídeo. Se falhar, dá F5 e tenta de novo, até ao limite configurado.
+        const video = await tentarComReinicio(page, cfg.tentativasPorCena, log, async () => {
+          
+          if (!preparado) {
+            await prepararEditor(page, { config: { ...projeto.config, proporcao: formato }, referencias, log });
+            preparado = true;
+          }
+          
+          return await gerarCena(page, {
+            prompt: adaptarPrompt(cena.prompt, formato),
+            arquivo: `take-${String(cena.numero).padStart(2, "0")}_${sufixoFormato(formato)}.mp4`,
+            referencias,
+            caminhoQuadroInicial: cena.quadroInicial ? caminhoEntrada(projetoId, cena.quadroInicial) : null,
+            pastaSaida: pastaVideos(projetoId),
+            log,
+          });
+
         });
+        // === FIM DA PROTEÇÃO ===
 
         log("→ verificar qualidade");
         const caminhoVideo = join(pastaVideos(projetoId), video);

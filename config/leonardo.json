@@ -1,57 +1,57 @@
 {
   "urlInicio": "https://app.leonardo.ai/",
-  "urlEditorVideo": "https://app.leonardo.ai/image-generation/video",
+  "urlEditorVideo": "https://app.leonardo.ai/generate",
   "textos": {
     "login": "Log in|Sign in|Entrar",
-    "gerar": "^Generate|^Gerar",
-    "tituloPainelReferencia": "^\\s*Reference\\s*$",
-    "cartaoReferenciaImagem": "^\\s*Image\\s*Reference",
-    "cartaoStartFrame": "^\\s*Start frame",
-    "abaVideo": "^\\s*Video\\s*$",
+    "gerar": "Generate|Gerar",
+    "tituloPainelReferencia": "^\\s*Reference\\s*$|^\\s*Image Input\\s*$",
+    "cartaoReferenciaImagem": "Image Reference",
+    "cartaoStartFrame": "Start frame",
+    "abaVideo": "Video",
     "tituloSelecaoMidia": "Select Media",
-    "abaUploads": "^\\s*Your Uploads\\s*$",
+    "abaUploads": "Your Uploads",
     "uploadImagem": "Upload an image",
     "selecionados": "(\\d+)\\s*/\\s*(\\d+)\\s*selected",
-    "confirmar": "^\\s*Confirm\\s*$"
+    "confirmar": "Confirm"
   },
   "seletores": {
-    "prompt": "textarea, [contenteditable='true']",
-    "botaoReferencias": "button[aria-label*='reference' i], button[aria-label*='image' i], button[title*='reference' i]",
-    "itemMidia": "img",
-    "miniaturaReferencia": "img",
-    "itemSelecionado": "[aria-selected='true'], [aria-checked='true'], [data-state='checked'], [data-selected='true']",
+    "prompt": "textarea:visible, [contenteditable='true']:visible",
+    "botaoReferencias": "button[data-tracking-id='generation_add_image_guidance_element'], button[aria-label*='Add reference' i]",
+    "itemMidia": "[role='article']",
+    "miniaturaReferencia": "div[data-slot='prompt-thumbnails'] img",
+    "itemSelecionado": "[role='article'] button[aria-label='Select'][aria-pressed='true']",
     "parametroReferenciasUrl": "imageGuidance"
   },
   "configuracao": [
     {
       "campo": "modelo",
       "tipo": "menu",
-      "abrir": "^Model$",
-      "opcao": "^\\s*{valor}\\s*$"
+      "abrir": "Model",
+      "opcao": "{valor}"
     },
     {
       "campo": "duracao",
       "tipo": "slider",
-      "rotulo": "^Duration"
+      "rotulo": "Duration"
     },
     {
       "campo": "modo",
       "tipo": "botao",
-      "opcao": "^\\s*{valor}\\b"
+      "opcao": "{valor}"
     },
     {
       "campo": "proporcao",
       "tipo": "botao",
-      "opcao": "^\\s*{valor}\\s*$"
+      "opcao": "{valor}"
     },
     {
       "campo": "resolucao",
       "tipo": "botao",
-      "opcao": "^\\s*{valor}\\b"
+      "opcao": "{valor}"
     }
   ],
   "tempos": {
-    "esperaAposCarregarMs": 4000,
+    "esperaAposCarregarMs": 6000,
     "maximoGeracaoMs": 900000,
     "pausaEntreCenasMs": [
       20000,
